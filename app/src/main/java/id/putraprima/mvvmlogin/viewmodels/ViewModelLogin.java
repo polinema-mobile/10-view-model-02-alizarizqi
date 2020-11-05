@@ -10,16 +10,25 @@ public class ViewModelLogin extends ViewModel{
     private MutableLiveData<ModelLogin> loginMutableLiveData = new MutableLiveData<>();
     private ModelLogin modelLogin;
 
+    public String username, password;
+
     public ViewModelLogin(ModelLogin modelLogin){
-        this.loginMutableLiveData.setValue(modelLogin);
+        this.modelLogin = modelLogin;
+        this.loginMutableLiveData.setValue(this.modelLogin);
 
     }
 
-    public void Login(){
-        Log.d("username", this.loginMutableLiveData.getValue().getUsername());
-        Log.d("password", this.loginMutableLiveData.getValue().getPassword());
-
+    public boolean isLogin(){
+        if(username.equals(modelLogin.getUsername()) && password.equals(modelLogin.getPassword())){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public LiveData<ModelLogin> modelLoginLiveData(){
+        return loginMutableLiveData;
+    }
     }
 
     
-}
+
