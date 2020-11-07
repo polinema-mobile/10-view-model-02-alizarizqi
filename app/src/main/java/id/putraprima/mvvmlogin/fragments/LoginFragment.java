@@ -2,8 +2,11 @@ package id.putraprima.mvvmlogin.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -20,6 +23,7 @@ import id.putraprima.mvvmlogin.viewmodels.ViewModelLoginFactory;
 
 public class LoginFragment extends Fragment {
     private ViewModelLogin viewModelLogin;
+    Bundle bundle = new Bundle();
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -35,18 +39,23 @@ public class LoginFragment extends Fragment {
         View view = binding.getRoot();
         binding.setViewModel(viewModelLogin);
         binding.setLifecycleOwner(this);
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+        return view;
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModelLogin.validLiveData().observe(this.getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onClick(View v) {
-                if(viewModelLogin.isLogin()){
-                    Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment);
-                }else{
-                    binding.editTextEmail.setError("Username harus sesuai");
-                    binding.editTextPassword.setError("Password harus sesuai");
+            public void onChanged(Boolean aBoolean) {
+                if(viewModelLogin.validLiveData().getValue() == true){
+                    bundle.putString("username", viewModelLogin.modelLoginLiveData().getValue().username);
+                    Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment, bundle);
                 }
             }
         });
-        return view;
+
 
     }
 }
